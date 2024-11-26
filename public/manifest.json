@@ -17,6 +17,14 @@
       "type": "image/png",
       "sizes": "512x512"
     }
+  ],"manifest_version": 3,
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "media/webFonts/SofiaPro-Blackitalic/font.woff2"
+      ],
+      "matches": ["<all_urls>"]
+    }
   ],
   "start_url": ".",
   "display": "standalone",

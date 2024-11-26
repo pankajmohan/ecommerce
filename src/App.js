@@ -3,12 +3,12 @@ import Sidebar from './components/Sidebar';
 import Header from './components/Header';
 import MainContent from './components/MainContent';
 import SidebarItem from './components/SidebarItem';
-import RightSidebar from './components/RightSidebar';
+import RightSidebar from './components/RighSidebar';
 
 import { Boxes, BarChart3, UserCircle, Package, Receipt, Settings, LifeBuoy } from "lucide-react";
 
 function App() {
-  const [isSidebarOpen, setSidebarOpen] = useState(true);
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [isRightSidebarOpen, setRightSidebarOpen] = useState(false);
 
   const toggleSidebar = () => {

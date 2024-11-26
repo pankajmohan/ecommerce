@@ -9,19 +9,15 @@ function Sidebar({ children, isSidebarOpen }) {
   // const [expanded, setExpanded] = useState(true);
 
   return (
-    <aside className="h-screen">
+    <aside className="h-screen" >
       <nav
         className={`h-full flex flex-col bg-white border-r shadow-sm transition-all ${
           isSidebarOpen ? "w-64" : "w-16"
         }`}
       >
-        <div className="p-4 pb-2 flex justify-between items-center">
-          <img
-            src="https://img.logoipsum.com/243.svg"
-            className={`overflow-hidden transition-all ${isSidebarOpen ? "w-32" : "w-0"}`}
-            alt=""
-          />
-          {/* <button
+        <div className="p-4 pb-2 flex justify-between items-center text-center">
+        {/* <span className='text-indigo-600 font-bold text-4xl font-sans'>Jootiya</span> */}
+        {/* <button
             className="p-1.5 rounded-lg bg-gray-50 hover:bg-gray-100"
             onClick={() => setExpanded((curr) => !curr)}
           >

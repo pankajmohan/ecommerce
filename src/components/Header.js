@@ -11,11 +11,8 @@ function Header({ toggleSidebar }) {
         <Menu size={24} />
       </button>
       {/* <h1 className="text-lg font-semibold">Dashboard</h1>
-       */}<img
-       src="https://img.logoipsum.com/243.svg"
-       
-       alt=""
-     />
+       */}
+       <span className='text-indigo-600 font-bold text-4xl font-sans'>Gharelu Market</span>
       <div className="flex items-center space-x-4">
         <img
           src="https://via.placeholder.com/40"
@@ -28,3 +25,4 @@ function Header({ toggleSidebar }) {
 }
 
 export default Header;
+
