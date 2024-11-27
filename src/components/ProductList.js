@@ -1,10 +1,14 @@
 import React from 'react';
 import ProductCard from './ProductCard';
+import image1 from './images/cover image.jpeg';
+import image2 from './images/coverimage2.png';
+import image3 from './images/coverimage3.png';
+import image4 from './images/coverimage4.png';
 
-const image1 = 'https://via.placeholder.com/150/FF0000/FFFFFF?text=1';
-const image2 = 'https://via.placeholder.com/150/00FF00/FFFFFF?text=2';
-const image3 = 'https://via.placeholder.com/150/0000FF/FFFFFF?text=3';
-const image4 = 'https://via.placeholder.com/150/000000/FFFFFF?text=4';
+// const image1 = './images/coverimage2.png';
+// const image2 = 'https://via.placeholder.com/50/00FF00/FFFFFF?text=2';
+// const image3 = 'https://via.placeholder.com/50/0000FF/FFFFFF?text=3';
+// const image4 = 'https://via.placeholder.com/50/000000/FFFFFF?text=4';
 let images = [image1, image2, image3]
 const random = Math.floor(Math.random() * images.length)
 const ProductList = ({ onHoverStart, onHoverEnd, hoveredImageIndices }) => {
