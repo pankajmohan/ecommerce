@@ -12,7 +12,7 @@ function Header({ toggleSidebar }) {
       </button>
       {/* <h1 className="text-lg font-semibold">Dashboard</h1>
        */}
-       <span className='text-indigo-600 font-bold text-4xl font-sans'>Gharelu Market</span>
+       <span className='text-indigo-600 font-bold text-4xl font-mono'>Logo</span>
       <div className="flex items-center space-x-4">
         <img
           src="https://via.placeholder.com/40"
