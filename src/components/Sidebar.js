@@ -10,11 +10,12 @@ function Sidebar({ children, isSidebarOpen }) {
 
   return (
     <aside className="h-screen" >
-      <nav
-        className={`h-full flex flex-col bg-white border-r shadow-sm transition-all ${
-          isSidebarOpen ? "w-64" : "w-16"
-        }`}
-      >
+     <nav
+  className={`h-full flex-shrink-0 bg-white border-r shadow-sm transition-all ${
+    isSidebarOpen ? "w-64" : "w-16"
+  }`}
+>
+
         <div className="p-4 pb-2 flex justify-between items-center text-center">
         {/* <span className='text-indigo-600 font-bold text-4xl font-sans'>Jootiya</span> */}
         {/* <button

@@ -3,29 +3,53 @@ import React from 'react';
 const ProductCard = ({ product, onHoverStart, onHoverEnd, currentImageIndex }) => {
   return (
     <div
-      className="max-w-full sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl mx-auto rounded-lg border border-indigo-200 bg-white shadow-md hover:shadow-lg transition-shadow flex flex-col"
+      className="flex flex-col bg-white border border-gray-200 rounded-lg shadow hover:shadow-lg transition-shadow"
       onMouseEnter={() => onHoverStart(product.id, product.images.length)}
       onMouseLeave={() => onHoverEnd(product.id)}
+      style={{
+        width: '100%',
+        maxWidth: '18rem',
+      }}
     >
       {/* Product Image */}
-      <img
-        src={product.images[currentImageIndex]}
-        alt={product.name}
-        className="h-48 sm:h-52 md:h-60 lg:h-64 w-full object-cover rounded-t-lg"
-      />
+      <div className="relative">
+        <img
+          src={product.images[currentImageIndex]}
+          alt={product.name}
+          className="w-full object-cover rounded-t-lg"
+          style={{
+            height: '12rem', // Adjust this to match your desired image height
+          }}
+        />
+        
+        {/* Dots for Carousel */}
+        <div className="absolute bottom-2 w-full flex justify-center gap-1">
+          {product.images.map((_, index) => (
+            <span
+              key={index}
+              className={`h-2 w-2 rounded-full ${
+                index === currentImageIndex
+                  ? 'bg-indigo-500'
+                  : 'bg-gray-300'
+              } transition-all`}
+            />
+          ))}
+        </div>
+      </div>
 
-      <div className="flex-1 p-4">
+      {/* Product Content */}
+      <div className="flex flex-col flex-1 p-3">
         {/* Product Name */}
-        <h3 className="text-lg sm:text-xl md:text-2xl font-semibold text-gray-800">
+        <h3 className="text-sm md:text-base font-semibold text-gray-800">
           {product.name}
         </h3>
 
         {/* Product Description */}
         <p
-          className="text-gray-500 text-sm sm:text-base md:text-lg mt-2"
+          className="text-xs text-gray-500 mt-1 line-clamp-2"
           style={{
             display: '-webkit-box',
-            WebkitLineClamp: 3, // Number of lines to show
+            WebkitLineClamp: 2,
             WebkitBoxOrient: 'vertical',
             overflow: 'hidden',
           }}
@@ -33,19 +57,15 @@ const ProductCard = ({ product, onHoverStart, onHoverEnd, currentImageIndex }) =
           {product.description}
         </p>
 
-        {/* Price */}
-        {/* <div className="flex items-center justify-between mt-4">
-          
-        </div> */}
-      </div>
-
-      {/* Add to Cart Button */}
-      <div className='text-center'>   <span className="text-xl sm:text-2xl font-bold text-green-600">
+        {/* Price and Add to Cart */}
+        <div className="mt-auto text-center">
+          <span className="block text-sm font-bold text-green-600">
             ${product.price}
-          </span>     
-      <button className="px-4 py-2 sm:px-5 sm:py-3 bg-gray-50 text-indigp text-sm sm:text-base font-medium rounded-b-lg w-full hover:bg-indigo-500 hover:text-white transition-colors">
-        Add to Cart
-      </button>
+          </span>
+          <button className="px-3 py-2 mt-2 w-full bg-indigo-500 text-white text-sm rounded hover:bg-indigo-600 transition">
+            Add to Cart
+          </button>
+        </div>
       </div>
     </div>
   );

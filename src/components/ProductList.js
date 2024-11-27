@@ -5,10 +5,6 @@ import image2 from './images/coverimage2.png';
 import image3 from './images/coverimage3.png';
 import image4 from './images/coverimage4.png';
 
-// const image1 = './images/coverimage2.png';
-// const image2 = 'https://via.placeholder.com/50/00FF00/FFFFFF?text=2';
-// const image3 = 'https://via.placeholder.com/50/0000FF/FFFFFF?text=3';
-// const image4 = 'https://via.placeholder.com/50/000000/FFFFFF?text=4';
 let images = [image1, image2, image3]
 const random = Math.floor(Math.random() * images.length)
 const ProductList = ({ onHoverStart, onHoverEnd, hoveredImageIndices }) => {
@@ -31,7 +27,7 @@ const ProductList = ({ onHoverStart, onHoverEnd, hoveredImageIndices }) => {
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-6 p-4">
       {products.map((product) => (
         <ProductCard
           key={product.id}
