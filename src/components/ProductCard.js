@@ -40,7 +40,13 @@ const ProductCard = ({ product, onHoverStart, onHoverEnd, currentImageIndex }) =
       {/* Product Content */}
       <div className="flex flex-col flex-1 p-3">
         {/* Product Name */}
-        <h3 className="text-sm md:text-base font-semibold text-gray-800">
+        <h3 className="text-sm md:text-base font-semibold text-gray-800"
+        style={{
+            display: '-webkit-box',
+            WebkitLineClamp: 1,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+          }}>
           {product.name}
         </h3>
 
