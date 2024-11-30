@@ -1,5 +1,5 @@
-import React, { createContext, useState } from 'react';
-import { ChevronFirst, ChevronLast, MoreVertical } from "lucide-react";
+import React, { createContext } from 'react';
+import {  MoreVertical } from "lucide-react";
 
 export const SidebarContext = createContext({
   expanded: true, // Default value
@@ -17,13 +17,6 @@ function Sidebar({ children, isSidebarOpen }) {
 >
 
         <div className="p-4 pb-2 flex justify-between items-center text-center">
-        {/* <span className='text-indigo-600 font-bold text-4xl font-sans'>Jootiya</span> */}
-        {/* <button
-            className="p-1.5 rounded-lg bg-gray-50 hover:bg-gray-100"
-            onClick={() => setExpanded((curr) => !curr)}
-          >
-            {expanded ? <ChevronFirst /> : <ChevronLast />}
-          </button> */}
         </div>
         <SidebarContext.Provider value={{ isSidebarOpen }}>
           <ul className="flex-1 px-3">{children}</ul>

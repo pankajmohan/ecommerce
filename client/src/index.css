@@ -1,3 +1,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.side-bar-link.active{
+    @apply bg-yellow-300 !important;} 
