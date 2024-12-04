@@ -13,7 +13,7 @@ function MainContent() {
           ...prev,
           [productId]: (prev[productId] + 1) % imageCount, // Cycle images
         }));
-      }, 500); // Change every 500ms
+      }, 1000); // Change every 500ms
 
       intervalIdsRef.current[productId] = intervalId;
       setHoveredImageIndices((prev) => ({ ...prev, [productId]: 0 })); // Initialize to first image

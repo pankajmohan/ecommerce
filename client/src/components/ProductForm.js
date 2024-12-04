@@ -11,6 +11,7 @@ const ProductForm = () => {
   const [tags, setTags] = useState([]);
   const [images, setImages] = useState([]);
   const [previewImages, setPreviewImages] = useState([]);
+  const [brand, setBrand] = useState('');
 
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
@@ -32,7 +33,7 @@ const ProductForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!productName || !description || !stock || !price || !category) {
+    if (!productName || !description || !stock || !price || !category || !note || !brand) {
       alert('Please fill out all required fields.');
       return;
     }
@@ -46,19 +47,36 @@ const ProductForm = () => {
     formData.append('discount', discount);
     formData.append('category', category);
     formData.append('tags', tags.join(','));
+    formData.append('brand', brand);
 
     images.forEach((image, index) => {
-      formData.append(`image_${index + 1}`, image);
-    });
+        formData.append(`image_${index + 1}`, image); // Appending images with field names image_1, image_2, etc.
+      });
+      
 
     // Submit formData to the server
-    // fetch('/api/products', {
-    //   method: 'POST',
-    //   body: formData,
-    // })
-    //   .then((res) => res.json())
-    //   .then((data) => console.log(data))
-    //   .catch((err) => console.error(err));
+    fetch('http://localhost:5000/api/products', {
+      method: 'POST',
+      body: formData,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        alert('Product Submitted Successfully');
+        setProductName('');
+        setDescription('');
+        setNote('');
+        setStock('');
+        setPrice('');
+        setDiscount('');
+        setCategory('');
+        setTags([]);
+        setImages([]);
+        setBrand('');
+        setPreviewImages([]);
+      })
+      .catch((err) => {console.error(err);
+      alert('Failed to submit product please try again')
+  });
 
     alert('Product submitted successfully!');
   };
@@ -69,43 +87,55 @@ const ProductForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 max-w-3xl mx-auto p-4 border rounded-lg shadow-md">
+    <form onSubmit={handleSubmit} className="space-y-4 max-w-6xl mx-auto p-4 border rounded-lg shadow-md">
       <h2 className="text-lg font-bold">Add Product</h2>
 
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+        
       <div>
-        <label className="block font-medium mb-1">Product Name</label>
-        <input
-          type="text"
-          value={productName}
-          onChange={(e) => setProductName(e.target.value)}
-          placeholder="Enter product name"
-          className="w-full border border-gray-300 rounded-lg p-2"
-          required
-        />
-      </div>
+          <label className="block font-medium mb-1">Brand</label>
+          <input
+            type="text"
+            value={brand}
+            onChange={(e) => setBrand(e.target.value)}
+            placeholder="Enter product name"
+            className="w-full border border-gray-300 rounded-lg p-2"
+            required
+          />
+        </div>
+        <div>
+          <label className="block font-medium mb-1">Product Name</label>
+          <input
+            type="text"
+            value={productName}
+            onChange={(e) => setProductName(e.target.value)}
+            placeholder="Enter product name"
+            className="w-full border border-gray-300 rounded-lg p-2"
+            required
+          />
+        </div>
 
-      <div>
-        <label className="block font-medium mb-1">Description</label>
-        <textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder="Enter product description"
-          className="w-full border border-gray-300 rounded-lg p-2"
-          required
-        ></textarea>
-      </div>
+        <div>
+          <label className="block font-medium mb-1">Description</label>
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Enter product description"
+            className="w-full border border-gray-300 rounded-lg p-2"
+            required
+          ></textarea>
+        </div>
 
-      <div>
-        <label className="block font-medium mb-1">Note (Optional)</label>
-        <textarea
-          value={note}
-          onChange={(e) => setNote(e.target.value)}
-          placeholder="Enter additional notes"
-          className="w-full border border-gray-300 rounded-lg p-2"
-        ></textarea>
-      </div>
+        <div>
+          <label className="block font-medium mb-1">Note</label>
+          <textarea
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            placeholder="Enter additional notes"
+            className="w-full border border-gray-300 rounded-lg p-2"
+          ></textarea>
+        </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label className="block font-medium mb-1">Total Stock</label>
           <input
@@ -156,45 +186,45 @@ const ProductForm = () => {
             <option value="toys">Toys</option>
           </select>
         </div>
-      </div>
 
-      <div>
-        <label className="block font-medium mb-1">Tags (comma-separated)</label>
-        <input
-          type="text"
-          value={tags.join(',')}
-          onChange={handleTagsChange}
-          placeholder="Enter tags"
-          className="w-full border border-gray-300 rounded-lg p-2"
-        />
-      </div>
+        <div className="col-span-full">
+          <label className="block font-medium mb-1">Tags (comma-separated)</label>
+          <input
+            type="text"
+            value={tags.join(',')}
+            onChange={handleTagsChange}
+            placeholder="Enter tags"
+            className="w-full border border-gray-300 rounded-lg p-2"
+          />
+        </div>
 
-      <div>
-        <label className="block font-medium mb-1">Product Images (Max 4)</label>
-        <input
-          type="file"
-          accept="image/*"
-          multiple
-          onChange={handleImageUpload}
-          className="block w-full text-sm text-gray-500 border border-gray-300 rounded-lg cursor-pointer"
-        />
-        <div className="mt-2 flex gap-2 flex-wrap">
-          {previewImages.map((src, index) => (
-            <div key={index} className="relative">
-              <img
-                src={src}
-                alt={`Preview ${index}`}
-                className="w-24 h-24 object-cover rounded-md border border-gray-300"
-              />
-              <button
-                type="button"
-                onClick={() => removePreview(index)}
-                className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
-              >
-                ×
-              </button>
-            </div>
-          ))}
+        <div className="col-span-full">
+          <label className="block font-medium mb-1">Product Images (Max 4)</label>
+          <input
+            type="file"
+            accept="image/*"
+            multiple
+            onChange={handleImageUpload}
+            className="block w-full text-sm text-gray-500 border border-gray-300 rounded-lg cursor-pointer"
+          />
+          <div className="mt-2 flex gap-2 flex-wrap">
+            {previewImages.map((src, index) => (
+              <div key={index} className="relative">
+                <img
+                  src={src}
+                  alt={`Preview ${index}`}
+                  className="w-24 h-24 object-cover rounded-md border border-gray-300"
+                />
+                <button
+                  type="button"
+                  onClick={() => removePreview(index)}
+                  className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
