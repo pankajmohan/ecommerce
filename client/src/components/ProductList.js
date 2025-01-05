@@ -8,7 +8,7 @@ const ProductList = ({ onHoverStart, onHoverEnd, hoveredImageIndices }) => {
     // Fetch products from the backend
     const fetchProducts = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/products');
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/show_products`);
         const data = await response.json();
         setProducts(data.products);
       } catch (err) {

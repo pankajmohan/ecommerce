@@ -45,6 +45,53 @@ const upload = multer({
     cb(null, true);
   },
 });
+// Fetch products
+app.get('/api/show_products', async (req, res) => {
+  const client = await pool.connect();
+  try {
+    // Fetch all products and their images from the database
+    const productQuery = `
+      SELECT p.id AS product_id, p.name AS product_name, p.description, p.note, p.stock, p.price, p.discount, p.category, p.tags, p.brand, 
+             pi.image_url 
+      FROM products p
+      LEFT JOIN product_images pi ON p.id = pi.product_id
+    `;
+    
+    const result = await client.query(productQuery);
+    const products = result.rows.reduce((acc, row) => {
+      const { product_id, product_name, description, note, stock, price, discount, category, tags, brand, image_url } = row;
+
+      if (!acc[product_id]) {
+        acc[product_id] = {
+          product_id,
+          product_name,
+          description,
+          note,
+          stock,
+          price,
+          discount,
+          category,
+          tags,
+          brand,
+          images: [],
+        };
+      }
+
+      acc[product_id].images.push(image_url); // Push image URLs into the images array
+      return acc;
+    }, {});
+
+    res.status(200).json({
+      message: 'Products fetched successfully',
+      products: Object.values(products),
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Error fetching products', error: err.message });
+  } finally {
+    client.release();
+  }
+});
 
 // Serve static files from the uploads directory
 app.use('/uploads', express.static(uploadDir));
@@ -59,7 +106,7 @@ app.post('/api/products', upload.fields([
   const client = await pool.connect();
   try {
     const {
-      productName,
+      name,  // Assuming the input field is 'name'
       description,
       note,
       stock,
@@ -72,19 +119,26 @@ app.post('/api/products', upload.fields([
 
     const files = req.files; // Object of files (e.g., image_1, image_2, etc.)
 
+    // Handle tags as an array
+    const tagsArray = tags ? tags.split(',').map(tag => tag.trim()) : [];
+
+    // Convert price and discount to numbers
+    const priceNum = parseFloat(price);
+    const discountNum = parseFloat(discount) || 0;  // Default to 0 if discount is undefined
+
     // Insert the product into the database first
     const productInsert = await client.query(
-      `INSERT INTO products (product_name, description, note, stock, price, discount, category, tags, brand) 
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING product_id`,
-      [productName, description, note, stock, price, discount, category, tags, brand]
+      `INSERT INTO products (name, description, note, stock, price, discount, category, tags, brand) 
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id`,
+      [name, description, note, stock, priceNum, discountNum, category, tagsArray, brand]
     );
-    const productId = productInsert.rows[0].product_id;
+    const productId = productInsert.rows[0].id;
 
     // Process the image file uploads and store the paths in the database
     const imageInserts = Object.keys(files).map((field) =>
       files[field].map((file) => 
         client.query(
-          `INSERT INTO product_images (product_id, file_path) VALUES ($1, $2)`,
+          `INSERT INTO product_images (product_id, image_url) VALUES ($1, $2)`,
           [productId, `/uploads/${file.filename}`]  // Store image path in DB
         )
       )
@@ -103,39 +157,6 @@ app.post('/api/products', upload.fields([
     client.release();
   }
 });
-
-// Test route to fetch users
-app.get('/users', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT * FROM users');
-    res.json({ users: result.rows });
-  } catch (err) {
-    console.error('Error querying the database:', err.stack);
-    res.status(500).send('Error querying the database');
-  }
-});
-
-// Fetch all products with their images
-app.get('/api/products', async (req, res) => {
-  const client = await pool.connect();
-  try {
-    const result = await client.query(`
-      SELECT p.product_id, p.product_name, p.note, p.price, 
-             ARRAY_AGG(pi.file_path) AS images
-      FROM products p
-      LEFT JOIN product_images pi ON p.product_id = pi.product_id
-      GROUP BY p.product_id
-    `);
-
-    res.status(200).json({ products: result.rows });
-  } catch (err) {
-    console.error('Error fetching products:', err.message);
-    res.status(500).json({ message: 'Server error', error: err.message });
-  } finally {
-    client.release();
-  }
-});
-
 
 // Start the server
 app.listen(PORT, () => {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 const ProductForm = () => {
-  const [productName, setProductName] = useState('');
+  const [name, setname] = useState('');
   const [description, setDescription] = useState('');
   const [note, setNote] = useState('');
   const [stock, setStock] = useState('');
@@ -12,6 +12,8 @@ const ProductForm = () => {
   const [images, setImages] = useState([]);
   const [previewImages, setPreviewImages] = useState([]);
   const [brand, setBrand] = useState('');
+
+  const categories = ['Electronics', 'Fashion', 'Home', 'Sports', 'Beauty']; // Example categories
 
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
@@ -33,52 +35,50 @@ const ProductForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!productName || !description || !stock || !price || !category || !note || !brand) {
+    if (!name || !description || !stock || !price || !category || !note || !brand) {
       alert('Please fill out all required fields.');
       return;
     }
 
     const formData = new FormData();
-    formData.append('productName', productName);
+    formData.append('name', name);
     formData.append('description', description);
     formData.append('note', note);
     formData.append('stock', stock);
     formData.append('price', price);
     formData.append('discount', discount);
-    formData.append('category', category);
+    formData.append('category', category); // Submit category as a string
     formData.append('tags', tags.join(','));
     formData.append('brand', brand);
 
     images.forEach((image, index) => {
-        formData.append(`image_${index + 1}`, image); // Appending images with field names image_1, image_2, etc.
-      });
-      
+      formData.append(`image_${index + 1}`, image); // Appending images with field names image_1, image_2, etc.
+    });
 
     // Submit formData to the server
-    fetch('http://localhost:5000/api/products', {
+    fetch(`${process.env.REACT_APP_API_URL}/api/products`, {
       method: 'POST',
       body: formData,
     })
       .then((res) => res.json())
       .then((data) => {
         alert('Product Submitted Successfully');
-        setProductName('');
-        setDescription('');
-        setNote('');
-        setStock('');
-        setPrice('');
-        setDiscount('');
-        setCategory('');
-        setTags([]);
-        setImages([]);
-        setBrand('');
-        setPreviewImages([]);
+        // setname('');
+        // setDescription('');
+        // setNote('');
+        // setStock('');
+        // setPrice('');
+        // setDiscount('');
+        // setCategory('');
+        // setTags([]);
+        // setImages([]);
+        // setBrand('');
+        // setPreviewImages([]);
       })
-      .catch((err) => {console.error(err);
-      alert('Failed to submit product please try again')
-  });
-
-    alert('Product submitted successfully!');
+      .catch((err) => {
+        console.error(err);
+        alert('Failed to submit product. Please try again.');
+      });
   };
 
   const removePreview = (index) => {
@@ -91,24 +91,24 @@ const ProductForm = () => {
       <h2 className="text-lg font-bold">Add Product</h2>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-        
-      <div>
+        <div>
           <label className="block font-medium mb-1">Brand</label>
           <input
             type="text"
             value={brand}
             onChange={(e) => setBrand(e.target.value)}
-            placeholder="Enter product name"
+            placeholder="Enter product brand"
             className="w-full border border-gray-300 rounded-lg p-2"
             required
           />
         </div>
+
         <div>
           <label className="block font-medium mb-1">Product Name</label>
           <input
             type="text"
-            value={productName}
-            onChange={(e) => setProductName(e.target.value)}
+            value={name}
+            onChange={(e) => setname(e.target.value)}
             placeholder="Enter product name"
             className="w-full border border-gray-300 rounded-lg p-2"
             required
@@ -133,16 +133,17 @@ const ProductForm = () => {
             onChange={(e) => setNote(e.target.value)}
             placeholder="Enter additional notes"
             className="w-full border border-gray-300 rounded-lg p-2"
+            required
           ></textarea>
         </div>
 
         <div>
-          <label className="block font-medium mb-1">Total Stock</label>
+          <label className="block font-medium mb-1">Stock</label>
           <input
             type="number"
             value={stock}
             onChange={(e) => setStock(e.target.value)}
-            placeholder="Enter total stock"
+            placeholder="Enter product stock"
             className="w-full border border-gray-300 rounded-lg p-2"
             required
           />
@@ -161,12 +162,12 @@ const ProductForm = () => {
         </div>
 
         <div>
-          <label className="block font-medium mb-1">Discount (%)</label>
+          <label className="block font-medium mb-1">Discount</label>
           <input
             type="number"
             value={discount}
             onChange={(e) => setDiscount(e.target.value)}
-            placeholder="Enter discount percentage"
+            placeholder="Enter discount"
             className="w-full border border-gray-300 rounded-lg p-2"
           />
         </div>
@@ -180,47 +181,44 @@ const ProductForm = () => {
             required
           >
             <option value="">Select Category</option>
-            <option value="electronics">Electronics</option>
-            <option value="fashion">Fashion</option>
-            <option value="home">Home</option>
-            <option value="toys">Toys</option>
+            {categories.map((cat, index) => (
+              <option key={index} value={cat}>
+                {cat}
+              </option>
+            ))}
           </select>
         </div>
 
-        <div className="col-span-full">
-          <label className="block font-medium mb-1">Tags (comma-separated)</label>
+        <div>
+          <label className="block font-medium mb-1">Tags</label>
           <input
             type="text"
             value={tags.join(',')}
             onChange={handleTagsChange}
-            placeholder="Enter tags"
+            placeholder="Enter tags (comma separated)"
             className="w-full border border-gray-300 rounded-lg p-2"
           />
         </div>
 
         <div className="col-span-full">
-          <label className="block font-medium mb-1">Product Images (Max 4)</label>
+          <label className="block font-medium mb-1">Images</label>
           <input
             type="file"
             accept="image/*"
             multiple
             onChange={handleImageUpload}
-            className="block w-full text-sm text-gray-500 border border-gray-300 rounded-lg cursor-pointer"
+            className="w-full"
           />
-          <div className="mt-2 flex gap-2 flex-wrap">
-            {previewImages.map((src, index) => (
+          <div className="flex space-x-2 mt-2">
+            {previewImages.map((url, index) => (
               <div key={index} className="relative">
-                <img
-                  src={src}
-                  alt={`Preview ${index}`}
-                  className="w-24 h-24 object-cover rounded-md border border-gray-300"
-                />
+                <img src={url} alt={`Image Preview ${index + 1}`} className="w-20 h-20 object-cover rounded-md" />
                 <button
                   type="button"
                   onClick={() => removePreview(index)}
-                  className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
+                  className="absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full"
                 >
-                  ×
+                  X
                 </button>
               </div>
             ))}
@@ -230,7 +228,7 @@ const ProductForm = () => {
 
       <button
         type="submit"
-        className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600"
+        className="w-full bg-blue-500 text-white p-2 rounded-lg mt-4"
       >
         Submit Product
       </button>
