@@ -2,10 +2,15 @@ const { Pool } = require('pg');
 const dotenv = require('dotenv');
 dotenv.config();
 
-// Check if DATABASE_URL is available in the environment variables
+if (!process.env.DATABASE_URL) {
+  throw new Error('DATABASE_URL is not defined in environment variables');
+}
+
+const isLocalhost = process.env.DATABASE_URL.includes("localhost");
+
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: process.env.DATABASE_URL.includes("localhost") ? false : { rejectUnauthorized: false }, // Disable SSL for local dev
+  ssl: isLocalhost ? false : { rejectUnauthorized: false },
 });
 
 module.exports = pool;
