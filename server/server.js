@@ -15,7 +15,6 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
-// app.use(cors());
 app.use(cors({ origin: 'https://ecommerce-ic6h71vpo-pankajmohans-projects.vercel.app/ecommerce' }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -46,6 +45,7 @@ const upload = multer({
     cb(null, true);
   },
 });
+
 // Fetch products
 app.get('/api/show_products', async (req, res) => {
   const client = await pool.connect();
@@ -127,6 +127,14 @@ app.post('/api/products', upload.fields([
     const priceNum = parseFloat(price);
     const discountNum = parseFloat(discount) || 0;  // Default to 0 if discount is undefined
 
+    // Validate input fields
+    if (!name || !description || !stock || !price || !category || !brand) {
+      return res.status(400).json({
+        message: 'Validation error',
+        error: 'All fields except tags and note are required.'
+      });
+    }
+
     // Insert the product into the database first
     const productInsert = await client.query(
       `INSERT INTO products (name, description, note, stock, price, discount, category, tags, brand) 
@@ -153,7 +161,14 @@ app.post('/api/products', upload.fields([
     });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: 'Server error', error: err.message });
+    if (err.code === '23505') {
+      res.status(409).json({
+        message: 'Conflict error',
+        error: 'Product with similar name already exists.',
+      });
+    } else {
+      res.status(500).json({ message: 'Server error', error: err.message });
+    }
   } finally {
     client.release();
   }
