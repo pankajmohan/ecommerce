@@ -15,7 +15,20 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
-app.use(cors({ origin: 'https://ecommerce-ic6h71vpo-pankajmohans-projects.vercel.app/ecommerce' }));
+const allowedOrigins = [
+  'https://ecommerce-ic6h71vpo-pankajmohans-projects.vercel.app/ecommerce', 
+  'https://ecommerce-brown-three-70.vercel.app'
+];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (allowedOrigins.includes(origin) || !origin) {
+      callback(null, true); // Allow the request
+    } else {
+      callback(new Error('Not allowed by CORS')); // Reject the request
+    }
+  }
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
