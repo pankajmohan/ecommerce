@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const ProductForm = () => {
   const [name, setname] = useState('');
@@ -13,6 +14,7 @@ const ProductForm = () => {
   const [previewImages, setPreviewImages] = useState([]);
   const [brand, setBrand] = useState('');
 
+  const navigate = useNavigate();
   const categories = ['Electronics', 'Fashion', 'Home', 'Sports', 'Beauty']; // Example categories
 
   const handleImageUpload = (e) => {
@@ -63,6 +65,7 @@ const ProductForm = () => {
       .then((res) => res.json())
       .then((data) => {
         alert('Product Submitted Successfully');
+        navigate('/ecommerce'); 
         // setname('');
         // setDescription('');
         // setNote('');
