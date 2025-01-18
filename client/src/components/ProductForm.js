@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const ProductForm = () => {
+  process.env.REACT_APP_API_URL
   const [name, setname] = useState('');
   const [description, setDescription] = useState('');
   const [note, setNote] = useState('');
