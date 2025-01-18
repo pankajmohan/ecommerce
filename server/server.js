@@ -22,20 +22,22 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 const allowedOrigins = [
-  'https://ecommerce-ic6h71vpo-pankajmohans-projects.vercel.app/ecommerce',
-  'https://ecommerce-brown-three-70.vercel.app',
-  // 'http://localhost:3000'  // Add localhost for local development
+  'https://ecommerce-ic6h71vpo-pankajmohans-projects.vercel.app', // Main production domain
+  'https://ecommerce-brown-three-70.vercel.app', // Secondary domain or staging
+  'http://localhost:3000'  // Local development
 ];
 
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow all origins in development and only specified ones in production
-    if (allowedOrigins.includes(origin) || !origin) {
+    // Allow requests from allowed origins or no-origin requests (Postman, curl, etc.)
+    if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
+      console.error(`Blocked by CORS: ${origin}`); // Log blocked origin for debugging
       callback(new Error('Not allowed by CORS'));
     }
-  }
+  },
+  credentials: true, // Include credentials like cookies if necessary
 }));
 
 // Other middleware and routes
