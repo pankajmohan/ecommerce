@@ -24,7 +24,7 @@ const PORT = process.env.PORT || 5000;
 const allowedOrigins = [
   'https://ecommerce-ic6h71vpo-pankajmohans-projects.vercel.app/ecommerce',
   'https://ecommerce-brown-three-70.vercel.app',
-  'http://localhost:3000'  // Add localhost for local development
+  // 'http://localhost:3000'  // Add localhost for local development
 ];
 
 app.use(cors({
